@@ -1,0 +1,4 @@
+START RequestId: 123 Version: $LATEST
+Unable to import module 'app': No module named 'requests'
+END RequestId: 123
+REPORT RequestId: 123 Duration: 2.34 ms Billed Duration: 3 ms Memory Size: 128 MB Max Memory Used: 45 MB
