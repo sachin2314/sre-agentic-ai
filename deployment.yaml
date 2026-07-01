@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-upload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-upload
+  template:
+    metadata:
+      labels:
+        app: file-upload
+    spec:
+      containers:
+      - name: file-upload
+        image: 825967678784.dkr.ecr.eu-west-2.amazonaws.com/file-upload-app:latest
+        ports:
+        - containerPort: 8080
+        command: ["python"]
+        args: ["app.py"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"

@@ -1,0 +1,5 @@
+2026-06-26T08:01:55Z Warning OOMKilling   Pod/app-pod-1  Memory limit exceeded: killed process (exit 137)
+2026-06-26T08:02:00Z Warning BackOff      Pod/app-pod-1  Back-off restarting failed container
+2026-06-26T08:02:05Z Warning Unhealthy    Pod/app-pod-1  Readiness probe failed: connection refused
+2026-06-26T08:02:45Z Normal  Scaling      Deployment/app HPA scaling up: 3 -> 6 replicas
+2026-06-26T08:03:00Z Warning FailedCreate ReplicaSet/app pods "app-" is forbidden: exceeded quota pods=10/10

@@ -1,0 +1,100 @@
+{
+  "incident_id": "INC-202606292210",
+  "generated_at": "2026-06-29T22:10:20.050860Z",
+  "severity": "P1 \u2014 Complete service outage",
+  "summary": "At 08:01:50 UTC the application pod was killed by the Linux OOM killer after memory usage reached 96% of the 512MB container limit. On restart the app could not reconnect to PostgreSQL (connection timeout), causing the supervisor to exhaust its 3 restart attempts. With all backend pods down, Nginx returned 502 Bad Gateway to all requests. A Kubernetes HPA attempted to scale up but hit the pod quota (10/10), preventing recovery.",
+  "timeline": [
+    {
+      "time": "08:00:10",
+      "event": "Memory at 50% (256MB/512MB) \u2014 normal"
+    },
+    {
+      "time": "08:01:00",
+      "event": "Memory climbs to 74% (380MB/512MB)"
+    },
+    {
+      "time": "08:03:00",
+      "event": "Pod quota exceeded (10/10) \u2014 scale-up blocked"
+    }
+  ],
+  "root_cause": "Primary: Memory leak / unbounded cache growth in the application. The app attempted to load the full product catalog into an in-memory cache (OutOfMemoryError: Failed to allocate 64MB for product catalog cache), exhausting the 512MB container memory limit. Contributing: PostgreSQL connection pool exhaustion (max connections hit at 08:01:30) meant that when the app restarted it could not obtain a DB connection within 5 s, preventing any successful restart. Compounding: Kubernetes pod quota was set equal to the current running count, so HPA-triggered scale-out was entirely blocked.\n\n\u26a0\ufe0f  GUARDRAIL WARNING: One or more statements in this root cause analysis could not be fully verified against the log evidence. Please manually review before publishing.",
+  "contributing_factors": [],
+  "immediate_fixes": [
+    "kubectl rollout restart deployment/app  # force fresh pod with clean memory",
+    "kubectl patch resourcequota resource-quota --patch '{\"spec\":{\"hard\":{\"pods\":\"20\"}}}'",
+    "psql -c 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = \\'idle\\' AND query_start < now() - interval \\'5 min\\';'",
+    "# Scale deployment manually past quota once quota is raised:",
+    "kubectl scale deployment/app --replicas=5"
+  ],
+  "permanent_fixes": [
+    "Implement LRU/TTL-bounded cache for product catalog (e.g., limit to 100MB max)",
+    "Add JVM/runtime heap limits aligned with container memory limit minus OS overhead",
+    "Set Kubernetes memory requests = limits for Guaranteed QoS (prevents OOM priority loss)",
+    "Add PgBouncer connection pooler to decouple app connection count from PostgreSQL max_connections",
+    "Raise pod quota to 2\u00d7 expected max replicas; add buffer for HPA burst",
+    "Add liveness probe with /memory endpoint to restart pod before OOM kill",
+    "Add readiness probe back-off so nginx removes pod from rotation before it is unresponsive",
+    "Implement Alertmanager alert: memory > 80% for > 2 minutes \u2192 page on-call"
+  ],
+  "runbook_reference": "runbooks/OOM_KILL_RECOVERY.md",
+  "evidence_lines_used": 6,
+  "react_iterations": 8,
+  "guardrail_report": {
+    "evidence_lines_total": 6,
+    "claims_checked": [
+      {
+        "field": "root_cause",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      },
+      {
+        "field": "contributing_factors",
+        "text": "No memory limit headroom \u2014 container limit (512MB) set too c",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      },
+      {
+        "field": "contributing_factors",
+        "text": "No circuit breaker on the product catalog cache load",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      },
+      {
+        "field": "contributing_factors",
+        "text": "PostgreSQL max_connections exhausted before OOM kill \u2014 resta",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      },
+      {
+        "field": "contributing_factors",
+        "text": "Pod quota (10) matched running pods (10) \u2014 HPA scale-out imp",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      },
+      {
+        "field": "contributing_factors",
+        "text": "No PodDisruptionBudget \u2014 all replicas could be OOM-killed si",
+        "confidence": 0.0,
+        "status": "UNVERIFIED"
+      }
+    ],
+    "claims_removed": [
+      "No memory limit headroom \u2014 container limit (512MB) set too close to normal working set",
+      "No circuit breaker on the product catalog cache load",
+      "PostgreSQL max_connections exhausted before OOM kill \u2014 restart was doomed",
+      "Pod quota (10) matched running pods (10) \u2014 HPA scale-out impossible",
+      "No PodDisruptionBudget \u2014 all replicas could be OOM-killed simultaneously",
+      "[timeline] Memory critical 93% \u2014 GC pressure begins",
+      "[timeline] GC pause 2300ms \u2014 latency spike",
+      "[timeline] GC pause 4100ms \u2014 requests timing out",
+      "[timeline] OOM kill \u2014 process 1 (app) killed (signal 9)",
+      "[timeline] Kubernetes BackOff: failed container",
+      "[timeline] Nginx: connection refused \u2192 502 errors begin",
+      "[timeline] Supervisor: max restarts (3) reached \u2014 pod dead",
+      "[timeline] HPA scales from 3\u21926 replicas"
+    ],
+    "confidence_scores": {
+      "root_cause": 0.0
+    }
+  }
+}

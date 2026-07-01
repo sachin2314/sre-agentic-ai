@@ -1,0 +1,10 @@
+2026-06-26T08:00:00Z INFO  App started OK - memory: 200MB / 512MB
+2026-06-26T08:01:00Z INFO  Memory growing - memory: 380MB / 512MB
+2026-06-26T08:01:30Z WARN  Memory high - memory: 480MB / 512MB
+2026-06-26T08:01:50Z ERROR OutOfMemoryError: failed to allocate memory for cache
+2026-06-26T08:01:55Z FATAL Process killed by OOM killer (exit code 137)
+2026-06-26T08:02:00Z INFO  Restarting app... attempt 1 of 3
+2026-06-26T08:02:01Z ERROR Cannot connect to database: connection timeout
+2026-06-26T08:02:04Z INFO  Restarting app... attempt 2 of 3
+2026-06-26T08:02:05Z ERROR Cannot connect to database: connection timeout
+2026-06-26T08:02:07Z FATAL Max restart attempts reached. Giving up.

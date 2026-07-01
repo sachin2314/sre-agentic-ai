@@ -1,0 +1,4 @@
+2026/06/26 08:02:01 [error] connect() failed (111: Connection refused) upstream: "http://10.0.1.5:8080"
+2026/06/26 08:02:05 [error] connect() failed (111: Connection refused) upstream: "http://10.0.1.6:8080"
+2026/06/26 08:02:10 [error] no live upstreams while connecting to upstream: "backend_pool"
+2026/06/26 08:02:15 [error] no live upstreams while connecting to upstream: "backend_pool"
