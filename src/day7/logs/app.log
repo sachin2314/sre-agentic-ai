@@ -1,0 +1,35 @@
+2024-01-15 09:00:01 INFO  [app] Service started. version=2.4.1 env=production
+2024-01-15 09:00:05 INFO  [app] Database connection pool initialised. pool_size=10
+2024-01-15 09:00:10 INFO  [app] Health check passed. latency_ms=12
+2024-01-15 09:05:00 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=45 status=200
+2024-01-15 09:05:01 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=52 status=200
+2024-01-15 09:05:03 INFO  [app] Request processed. endpoint=/api/products method=GET latency_ms=38 status=200
+2024-01-15 09:10:00 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=48 status=200
+2024-01-15 09:10:05 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=55 status=200
+2024-01-15 09:15:00 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=60 status=200
+2024-01-15 09:15:02 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=65 status=200
+2024-01-15 09:20:00 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=120 status=200
+2024-01-15 09:20:01 WARN  [app] Slow query detected. query=SELECT * FROM orders latency_ms=350
+2024-01-15 09:20:03 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=380 status=200
+2024-01-15 09:20:05 WARN  [app] Slow query detected. query=SELECT * FROM users latency_ms=420
+2024-01-15 09:20:08 ERROR [app] Request failed. endpoint=/api/orders method=POST latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:09 ERROR [app] Request failed. endpoint=/api/users method=GET latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:10 WARN  [app] Connection pool exhausted. active=10 waiting=23
+2024-01-15 09:20:11 ERROR [app] Request failed. endpoint=/api/products method=GET latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:12 ERROR [app] Request failed. endpoint=/api/orders method=POST latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:13 ERROR [app] Request failed. endpoint=/api/users method=GET latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:14 ERROR [app] Request failed. endpoint=/api/orders method=POST latency_ms=5001 status=500 error="database timeout"
+2024-01-15 09:20:15 FATAL [app] Out of memory. used_mb=2048 limit_mb=2048
+2024-01-15 09:20:16 FATAL [app] Process killed by OOM killer. pid=1234
+2024-01-15 09:21:00 INFO  [app] Service restarting. attempt=1
+2024-01-15 09:21:05 ERROR [app] Startup failed. reason="database unreachable"
+2024-01-15 09:21:30 INFO  [app] Service restarting. attempt=2
+2024-01-15 09:21:35 ERROR [app] Startup failed. reason="database unreachable"
+2024-01-15 09:22:00 INFO  [app] Service restarting. attempt=3
+2024-01-15 09:22:10 INFO  [app] Database connection re-established.
+2024-01-15 09:22:12 INFO  [app] Service started successfully.
+2024-01-15 09:22:15 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=80 status=200
+2024-01-15 09:22:20 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=90 status=200
+2024-01-15 09:25:00 INFO  [app] Request processed. endpoint=/api/users method=GET latency_ms=55 status=200
+2024-01-15 09:25:05 INFO  [app] Request processed. endpoint=/api/orders method=POST latency_ms=60 status=200
+2024-01-15 09:30:00 INFO  [app] Health check passed. latency_ms=20

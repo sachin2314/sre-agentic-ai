@@ -1,0 +1,28 @@
+2024-01-15 09:00:00 Normal   Scheduled     Pod/api-server-6d4b9f-xkp2z   Successfully assigned default/api-server-6d4b9f-xkp2z to node-1
+2024-01-15 09:00:02 Normal   Pulled        Pod/api-server-6d4b9f-xkp2z   Container image "api-server:2.4.1" already present on machine
+2024-01-15 09:00:03 Normal   Created       Pod/api-server-6d4b9f-xkp2z   Created container api-server
+2024-01-15 09:00:04 Normal   Started       Pod/api-server-6d4b9f-xkp2z   Started container api-server
+2024-01-15 09:00:05 Normal   ScalingReplicaSet  Deployment/api-server    Scaled up replica set api-server-6d4b9f to 3
+2024-01-15 09:05:00 Normal   Healthy       Pod/api-server-6d4b9f-xkp2z   Readiness probe succeeded
+2024-01-15 09:10:00 Normal   Healthy       Pod/api-server-6d4b9f-abc1y   Readiness probe succeeded
+2024-01-15 09:18:00 Warning  BackOff       Pod/db-postgres-0              Back-off restarting failed container
+2024-01-15 09:19:00 Warning  OOMKilling    Node/node-2                    Memory cgroup out of memory: Kill process 5678 (postgres) score 900
+2024-01-15 09:20:00 Warning  Unhealthy     Pod/api-server-6d4b9f-xkp2z   Liveness probe failed: HTTP probe failed with statuscode: 500
+2024-01-15 09:20:01 Warning  Unhealthy     Pod/api-server-6d4b9f-abc1y   Liveness probe failed: HTTP probe failed with statuscode: 500
+2024-01-15 09:20:02 Warning  Unhealthy     Pod/api-server-6d4b9f-def3z   Liveness probe failed: HTTP probe failed with statuscode: 500
+2024-01-15 09:20:05 Normal   Killing       Pod/api-server-6d4b9f-xkp2z   Stopping container api-server
+2024-01-15 09:20:06 Normal   Killing       Pod/api-server-6d4b9f-abc1y   Stopping container api-server
+2024-01-15 09:20:07 Normal   Killing       Pod/api-server-6d4b9f-def3z   Stopping container api-server
+2024-01-15 09:20:10 Warning  FailedCreate  ReplicaSet/api-server-6d4b9f   Error creating: pods "api-server-6d4b9f-" is forbidden: exceeded quota: compute-resources, requested: pods=1, used: pods=10, limited: pods=10
+2024-01-15 09:20:11 Warning  FailedCreate  ReplicaSet/api-server-6d4b9f   Error creating: pods "api-server-6d4b9f-" is forbidden: exceeded quota: compute-resources, requested: pods=1, used: pods=10, limited: pods=10
+2024-01-15 09:20:12 Warning  FailedCreate  ReplicaSet/api-server-6d4b9f   Error creating: pods "api-server-6d4b9f-" is forbidden: exceeded quota: compute-resources, requested: pods=1, used: pods=10, limited: pods=10
+2024-01-15 09:20:15 Warning  ScalingLimited HorizontalPodAutoscaler/api-server   the desired count is outside of the min/max count range
+2024-01-15 09:20:16 Normal   SuccessfulRescale HorizontalPodAutoscaler/api-server  New size: 5; reason: cpu resource utilization (percentage of request) above target
+2024-01-15 09:21:00 Normal   Scheduled     Pod/api-server-6d4b9f-gh4w    Successfully assigned default/api-server-6d4b9f-gh4w to node-1
+2024-01-15 09:21:02 Normal   Pulled        Pod/api-server-6d4b9f-gh4w    Container image "api-server:2.4.1" already present on machine
+2024-01-15 09:21:05 Warning  BackOff       Pod/api-server-6d4b9f-gh4w    Back-off restarting failed container (database unreachable)
+2024-01-15 09:21:30 Warning  BackOff       Pod/api-server-6d4b9f-gh4w    Back-off restarting failed container (database unreachable)
+2024-01-15 09:22:00 Normal   Started       Pod/api-server-6d4b9f-gh4w    Started container api-server
+2024-01-15 09:22:02 Normal   Healthy       Pod/api-server-6d4b9f-gh4w    Readiness probe succeeded
+2024-01-15 09:22:05 Normal   ScalingReplicaSet  Deployment/api-server    Scaled up replica set api-server-6d4b9f to 3
+2024-01-15 09:30:00 Normal   Healthy       Pod/api-server-6d4b9f-gh4w    Readiness probe succeeded

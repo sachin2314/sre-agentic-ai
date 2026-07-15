@@ -1,0 +1,29 @@
+2024-01-15 09:00:01 [INFO]  PostgreSQL 14.5 on x86_64 started. max_connections=200
+2024-01-15 09:05:00 [INFO]  Query executed. query_id=q001 duration_ms=12 rows=50 table=users
+2024-01-15 09:05:02 [INFO]  Query executed. query_id=q002 duration_ms=18 rows=120 table=orders
+2024-01-15 09:10:00 [INFO]  Query executed. query_id=q003 duration_ms=15 rows=80 table=products
+2024-01-15 09:10:05 [INFO]  Query executed. query_id=q004 duration_ms=20 rows=200 table=orders
+2024-01-15 09:15:00 [INFO]  Query executed. query_id=q005 duration_ms=22 rows=60 table=users
+2024-01-15 09:18:00 [INFO]  Autovacuum started on table: orders
+2024-01-15 09:18:30 [WARN]  Autovacuum running longer than expected. duration_ms=30000 table=orders
+2024-01-15 09:19:00 [WARN]  Lock contention detected. waiting_queries=5 table=orders
+2024-01-15 09:19:30 [WARN]  Slow query detected. query_id=q010 duration_ms=1200 query="SELECT * FROM orders WHERE created_at > '2024-01-01'"
+2024-01-15 09:20:00 [WARN]  Slow query detected. query_id=q011 duration_ms=2500 query="SELECT u.*, o.* FROM users u JOIN orders o ON u.id=o.user_id"
+2024-01-15 09:20:01 [WARN]  Connection pool near limit. active=95 max=100
+2024-01-15 09:20:02 [ERROR] Deadlock detected. transactions=t001,t002 table=orders
+2024-01-15 09:20:03 [WARN]  Slow query detected. query_id=q012 duration_ms=4800 query="UPDATE orders SET status='processing' WHERE id IN (...)"
+2024-01-15 09:20:04 [ERROR] Query timeout. query_id=q013 duration_ms=5001 query="SELECT * FROM orders" client=app-server-1
+2024-01-15 09:20:05 [ERROR] Query timeout. query_id=q014 duration_ms=5001 query="SELECT * FROM users" client=app-server-1
+2024-01-15 09:20:06 [ERROR] Query timeout. query_id=q015 duration_ms=5001 query="INSERT INTO orders VALUES (...)" client=app-server-1
+2024-01-15 09:20:07 [ERROR] Connection limit reached. active=200 max=200
+2024-01-15 09:20:08 [ERROR] Refusing new connection. active=200 max=200
+2024-01-15 09:20:09 [ERROR] Refusing new connection. active=200 max=200
+2024-01-15 09:20:10 [FATAL] Out of shared memory. shared_buffers=256MB used=256MB
+2024-01-15 09:20:11 [FATAL] Database process terminated. pid=5678
+2024-01-15 09:20:12 [INFO]  Database recovery starting.
+2024-01-15 09:21:45 [INFO]  WAL replay completed.
+2024-01-15 09:21:50 [INFO]  Database accepting connections again.
+2024-01-15 09:22:00 [INFO]  Query executed. query_id=q020 duration_ms=35 rows=50 table=users
+2024-01-15 09:22:05 [INFO]  Query executed. query_id=q021 duration_ms=40 rows=120 table=orders
+2024-01-15 09:25:00 [INFO]  Query executed. query_id=q022 duration_ms=18 rows=60 table=users
+2024-01-15 09:30:00 [INFO]  Database health check OK. connections=15 max=200
