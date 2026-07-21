@@ -1,0 +1,21 @@
+# =============================================================================
+# FAKE EKS POD LOGS - api-gateway-6f9a2b (namespace: production)
+# Healthy pod for COMPARISON - agent should notice this pod is stable
+# while web-service-7d8b9c is failing
+# =============================================================================
+
+2024-01-15T08:00:01.000Z INFO  [api-gateway/6f9a2b] API Gateway starting - version=1.8.3
+2024-01-15T08:00:02.000Z INFO  [api-gateway/6f9a2b] Route table loaded - routes=47 middlewares=5
+2024-01-15T08:00:03.000Z INFO  [api-gateway/6f9a2b] Server listening - port=443 tls=enabled
+2024-01-15T08:05:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=89Mi/256Mi cpu=4% rps=42
+2024-01-15T08:15:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=91Mi/256Mi cpu=5% rps=48
+2024-01-15T08:30:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=92Mi/256Mi cpu=5% rps=51
+2024-01-15T08:45:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=93Mi/256Mi cpu=6% rps=55
+2024-01-15T09:00:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=94Mi/256Mi cpu=6% rps=58
+2024-01-15T09:15:00.000Z WARNING [api-gateway/6f9a2b] Upstream web-service returning 503 - circuit_breaker=open failure_rate=78%
+2024-01-15T09:15:05.000Z ERROR  [api-gateway/6f9a2b] Upstream health check failed - target=web-service-7d8b9c:8080 error=connection_refused
+2024-01-15T09:15:10.000Z WARNING [api-gateway/6f9a2b] Removing unhealthy upstream - web-service-7d8b9c:8080 remaining_upstreams=1
+2024-01-15T09:20:00.000Z INFO  [api-gateway/6f9a2b] Metrics - memory=95Mi/256Mi cpu=8% rps=28 (reduced due to upstream failure)
+2024-01-15T09:47:10.000Z WARNING [api-gateway/6f9a2b] Upstream web-service-7d8b9c completely unavailable - status=OOMKilled
+2024-01-15T10:05:10.000Z INFO  [api-gateway/6f9a2b] New upstream registered - web-service-6c1a4e:8080 health=passing
+2024-01-15T10:05:15.000Z INFO  [api-gateway/6f9a2b] Traffic restored to web-service upstream - rps=55 healthy_upstreams=1

@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+reports/*.md
+logs/agent_run_*.log
+.venv/
+venv/

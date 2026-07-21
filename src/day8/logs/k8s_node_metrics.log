@@ -1,0 +1,19 @@
+# =============================================================================
+# FAKE NODE METRICS LOG - EKS Worker Nodes
+# Simulates: CloudWatch Container Insights Node-level metrics
+# FORMAT: TIMESTAMP NODE METRIC VALUE UNIT
+# =============================================================================
+
+2024-01-15T08:00:00.000Z  node-worker-3  memory_utilization=45.2%  memory_used=7.2Gi  memory_capacity=16Gi  cpu_utilization=18%
+2024-01-15T08:15:00.000Z  node-worker-3  memory_utilization=47.1%  memory_used=7.5Gi  memory_capacity=16Gi  cpu_utilization=20%
+2024-01-15T08:30:00.000Z  node-worker-3  memory_utilization=49.8%  memory_used=7.9Gi  memory_capacity=16Gi  cpu_utilization=22%
+2024-01-15T08:45:00.000Z  node-worker-3  memory_utilization=52.3%  memory_used=8.3Gi  memory_capacity=16Gi  cpu_utilization=24%
+2024-01-15T09:00:00.000Z  node-worker-3  memory_utilization=55.1%  memory_used=8.8Gi  memory_capacity=16Gi  cpu_utilization=27%
+2024-01-15T09:15:00.000Z  node-worker-3  memory_utilization=63.4%  memory_used=10.1Gi  memory_capacity=16Gi  cpu_utilization=35%
+2024-01-15T09:20:00.000Z  node-worker-3  memory_utilization=72.5%  memory_used=11.6Gi  memory_capacity=16Gi  cpu_utilization=42%  MEMORY_PRESSURE=true
+2024-01-15T09:30:00.000Z  node-worker-3  memory_utilization=78.9%  memory_used=12.6Gi  memory_capacity=16Gi  cpu_utilization=48%  MEMORY_PRESSURE=true
+2024-01-15T09:40:00.000Z  node-worker-3  memory_utilization=85.2%  memory_used=13.6Gi  memory_capacity=16Gi  cpu_utilization=52%  MEMORY_PRESSURE=true
+2024-01-15T09:47:00.000Z  node-worker-3  memory_utilization=91.8%  memory_used=14.6Gi  memory_capacity=16Gi  cpu_utilization=58%  MEMORY_PRESSURE=true  OOM_KILL_CANDIDATE=web-service-7d8b9c
+2024-01-15T09:50:00.000Z  node-worker-3  memory_utilization=62.1%  memory_used=9.9Gi   memory_capacity=16Gi  cpu_utilization=28%  (after OOM kill - memory freed)
+2024-01-15T10:00:00.000Z  node-worker-3  memory_utilization=55.3%  memory_used=8.8Gi   memory_capacity=16Gi  cpu_utilization=22%
+2024-01-15T10:05:00.000Z  node-worker-1  memory_utilization=41.2%  memory_used=6.5Gi   memory_capacity=16Gi  cpu_utilization=16%  (replacement pod scheduled here)

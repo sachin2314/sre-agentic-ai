@@ -1,0 +1,37 @@
+# =============================================================================
+# FAKE KUBERNETES EVENTS - namespace: production
+# Simulates: kubectl get events -n production --sort-by='.lastTimestamp'
+# FORMAT: TIMESTAMP  TYPE  REASON  OBJECT  MESSAGE
+# SCENARIO: OOMKilled → CrashLoopBackOff cascade
+# =============================================================================
+
+2024-01-15T07:58:00.000Z  Normal   Scheduled          pod/web-service-7d8b9c   Successfully assigned production/web-service-7d8b9c to node-worker-3
+2024-01-15T07:58:01.000Z  Normal   Pulling            pod/web-service-7d8b9c   Pulling image "ecr.aws/company/web-service:2.4.1"
+2024-01-15T07:59:30.000Z  Normal   Pulled             pod/web-service-7d8b9c   Successfully pulled image in 89.234s
+2024-01-15T07:59:31.000Z  Normal   Created            pod/web-service-7d8b9c   Created container web-service
+2024-01-15T07:59:32.000Z  Normal   Started            pod/web-service-7d8b9c   Started container web-service
+2024-01-15T08:00:05.000Z  Normal   Pulled             pod/web-service-7d8b9c   Container image already present on machine
+2024-01-15T08:30:00.000Z  Normal   NodeHasSufficientMemory  node/node-worker-3  Node node-worker-3 status is now: NodeHasSufficientMemory
+2024-01-15T09:05:00.000Z  Warning  HighMemoryUsage    pod/web-service-7d8b9c   Container web-service memory usage (322Mi) exceeds 60% of limit (512Mi)
+2024-01-15T09:10:00.000Z  Warning  SlowDBQuery        pod/web-service-7d8b9c   Database query latency exceeding threshold: 1100ms > 500ms threshold
+2024-01-15T09:10:00.000Z  Warning  MemoryPressure     node/node-worker-3       Node memory available: 1.2Gi (total: 16Gi used: 14.8Gi)
+2024-01-15T09:15:00.000Z  Warning  HighMemoryUsage    pod/web-service-7d8b9c   Container web-service memory usage (410Mi) exceeds 80% of limit (512Mi)
+2024-01-15T09:15:05.000Z  Warning  ProbeFailure       pod/web-service-7d8b9c   Readiness probe failed: HTTP probe failed with statuscode: 503
+2024-01-15T09:15:10.000Z  Warning  ProbeFailure       pod/web-service-7d8b9c   Readiness probe failed: HTTP probe failed with statuscode: 503
+2024-01-15T09:15:15.000Z  Warning  ProbeFailure       pod/web-service-7d8b9c   Readiness probe failed: HTTP probe failed with statuscode: 503
+2024-01-15T09:15:20.000Z  Normal   RemovingFromLoadBalancer  pod/web-service-7d8b9c   Stopping container web-service removed from load balancer
+2024-01-15T09:20:00.000Z  Warning  MemoryPressure     node/node-worker-3       Node memory pressure increasing: available=980Mi threshold=1Gi
+2024-01-15T09:47:01.000Z  Warning  OOMKilling         node/node-worker-3       Memory cgroup out of memory: Kill process 14823 (java) score 1847 or sacrifice child - oom_kill_process: Container web-service in pod production/web-service-7d8b9c
+2024-01-15T09:47:05.000Z  Warning  OOMKilled          pod/web-service-7d8b9c   Container web-service OOMKilled (exit code 137): memory limit=512Mi, memory used=512Mi
+2024-01-15T09:47:10.000Z  Warning  BackOff            pod/web-service-7d8b9c   Back-off restarting failed container web-service in pod production/web-service-7d8b9c - restart_count=1
+2024-01-15T09:47:45.000Z  Normal   Pulled             pod/web-service-7d8b9c   Container image already present on machine - restart_count=1
+2024-01-15T09:47:46.000Z  Normal   Started            pod/web-service-7d8b9c   Started container web-service - restart_count=1
+2024-01-15T09:50:31.000Z  Warning  OOMKilled          pod/web-service-7d8b9c   Container web-service OOMKilled again (exit code 137) - restart_count=1
+2024-01-15T09:50:40.000Z  Warning  BackOff            pod/web-service-7d8b9c   Back-off restarting failed container - restart_count=2 backoff=10s
+2024-01-15T09:51:30.000Z  Normal   Started            pod/web-service-7d8b9c   Started container web-service - restart_count=2
+2024-01-15T09:54:15.000Z  Warning  OOMKilled          pod/web-service-7d8b9c   Container web-service OOMKilled (exit code 137) - restart_count=2
+2024-01-15T09:54:30.000Z  Warning  CrashLoopBackOff   pod/web-service-7d8b9c   Back-off restarting failed container - restart_count=3 reason=CrashLoopBackOff
+2024-01-15T09:55:00.000Z  Warning  CrashLoopBackOff   pod/web-service-7d8b9c   Container web-service is in CrashLoopBackOff - restarts=3 last_reason=OOMKilled
+2024-01-15T10:00:00.000Z  Warning  CrashLoopBackOff   pod/web-service-7d8b9c   Container web-service is in CrashLoopBackOff - restarts=4 backoff=5m
+2024-01-15T10:05:00.000Z  Normal   Scheduled          pod/web-service-6c1a4e   New pod scheduled as replacement: production/web-service-6c1a4e on node-worker-1
+2024-01-15T10:05:05.000Z  Normal   Started            pod/web-service-6c1a4e   Replacement pod started successfully
