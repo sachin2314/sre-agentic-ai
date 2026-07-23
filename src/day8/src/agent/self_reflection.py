@@ -215,15 +215,24 @@ class SelfReflectingAgent:
         accumulated_output.append(f"=== INITIAL ANALYSIS ===\n{initial_result}")
         iterations += 1
 
+        # FIX: track the most recent section on its own, separate from
+        # accumulated_output. _reflect() below is fed ONLY this — never the
+        # ever-growing concatenation — so it always sees fresh content instead
+        # of re-reading a stale, truncated head of the original report.
+        latest_section = initial_result
+
         logger.info("[Iteration %d] Initial run complete. Starting reflection...", iterations)
 
         # -----------------------------------------------------------------------
         # REFLECTION LOOP: Up to max_reflections additional passes
         # -----------------------------------------------------------------------
         for reflection_num in range(self.max_reflections):
-            combined_so_far = "\n\n".join(accumulated_output)
+            # FIX: pass along what was flagged missing last time so the
+            # reflection LLM can check "is this now resolved?" instead of
+            # re-deriving the same gaps from scratch against stale context.
+            prior_missing_items = reflection_result.missing_items if reflection_result else []
 
-            reflection_result = self._reflect(combined_so_far)
+            reflection_result = self._reflect(latest_section, prior_missing_items)
 
             logger.info(
                 "[Reflection %d] Score=%d%% Complete=%s Missing=%s",
@@ -250,6 +259,17 @@ class SelfReflectingAgent:
                 logger.info("No follow-up task provided — stopping reflection")
                 break
 
+            # FIX (safety net): if the reflection call names the exact same
+            # gaps two passes in a row, the loop isn't converging — most
+            # likely cause of the earlier duplicate-report bug. Stop instead
+            # of spending a third pass reproducing the same output.
+            if prior_missing_items and reflection_result.missing_items == prior_missing_items:
+                logger.warning(
+                    "Same gaps flagged again (%s) — stopping reflection loop",
+                    reflection_result.missing_items,
+                )
+                break
+
             follow_up_task = (
                 f"FOLLOW-UP INVESTIGATION REQUIRED.\n"
                 f"Previous analysis was incomplete (score: {reflection_result.completeness_pct}%).\n"
@@ -264,11 +284,12 @@ class SelfReflectingAgent:
             )
 
             follow_up_result = self.agent_fn(follow_up_task)
-            accumulated_output.append(
-                f"\n=== FOLLOW-UP ANALYSIS (Iteration {iterations + 1}) ===\n"
-                f"Addressing: {', '.join(reflection_result.missing_items)}\n\n"
-                f"{follow_up_result}"
-            )
+            # FIX: the follow-up prompt (react_agent.py) now instructs the
+            # agent to return ONLY a "## 🔄 SUPPLEMENTAL FINDINGS" section, so
+            # we append it directly instead of wrapping it as another full
+            # "=== FOLLOW-UP ANALYSIS ===" report.
+            accumulated_output.append(follow_up_result)
+            latest_section = follow_up_result
             iterations += 1
 
         # Final reflection score
@@ -282,30 +303,55 @@ class SelfReflectingAgent:
             "quality_notes":     reflection_result.quality_notes if reflection_result else [],
         }
 
-    def _reflect(self, agent_output: str) -> ReflectionResult:
+    def _reflect(self, latest_section: str, prior_missing_items: list[str] | None = None) -> ReflectionResult:
         """
         Run the reflection LLM call against the agent's output.
 
         ALGORITHM:
-          1. Build prompt: system (reflection checklist) + user (agent output)
+          1. Build prompt: system (reflection checklist) + user (latest section
+             + a reminder of what was previously flagged missing, if any)
           2. Call LLM with temperature=0 (deterministic evaluation)
           3. Parse JSON response into ReflectionResult
           4. Return result
 
+        FIX (was: `agent_output: str` = the full cumulative report so far):
+          The old signature always sliced the FIRST 6000 chars off the
+          concatenation of every pass so far. Since new sections are
+          appended at the end, that slice pointed at the same stale head
+          every time — on a ~12k-char initial report, the reflection LLM
+          never even saw the Runbook section, let alone follow-up content.
+          That's why iteration 2 and 3 in past reports produced byte-for-byte
+          identical critiques. Now we only ever look at the most recent
+          section, plus an explicit note of what was previously missing.
+
         Args:
-            agent_output: The full output from the agent so far
+            latest_section:      Only the newest agent output (initial run,
+                                  or the latest follow-up), not the full history
+            prior_missing_items: missing_items from the previous reflection
+                                  pass, so the LLM can check "resolved now?"
+                                  instead of re-deriving gaps from scratch
 
         Returns:
             ReflectionResult: structured evaluation
         """
         from langchain_core.messages import SystemMessage, HumanMessage
 
+        prior_note = ""
+        if prior_missing_items:
+            prior_note = (
+                f"The previous review flagged these as missing: "
+                f"{', '.join(prior_missing_items)}.\n"
+                "Check whether the content below now resolves each one — "
+                "if it does, do not flag it again.\n\n"
+            )
+
         messages = [
             SystemMessage(content=REFLECTION_SYSTEM_PROMPT),
             HumanMessage(content=(
+                prior_note +
                 "Please evaluate the following SRE investigation output:\n\n"
                 "---BEGIN INVESTIGATION OUTPUT---\n"
-                f"{agent_output[:6000]}\n"   # Truncate to keep within context window
+                f"{latest_section[:12000]}\n"   # was [:6000] — too small; cut off real content
                 "---END INVESTIGATION OUTPUT---\n\n"
                 "Respond with ONLY the JSON evaluation. No other text."
             )),

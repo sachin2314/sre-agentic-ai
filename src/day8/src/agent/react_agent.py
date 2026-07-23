@@ -54,7 +54,7 @@ REQUIREMENTS (pip install):
 import json
 from datetime import datetime
 
-from langchain.agents import create_react_agent, AgentExecutor
+from langchain_classic.agents import create_react_agent, AgentExecutor
 from langchain_core.prompts import PromptTemplate
 
 from src.tools.pod_log_reader import read_pod_logs, list_available_pods
@@ -119,6 +119,20 @@ OUTPUT FORMAT for Final Answer — use EXACTLY this structure:
 
 ## 📘 RUNBOOK REFERENCE
 [Reference to applicable runbook file]
+
+# ---------------------------------------------------------------------------
+# FIX (duplicate-report bug): without this branch, every reflection follow-up
+# re-ran the FULL format above from scratch — same Timeline/Root Cause/
+# Recommendations restated near-verbatim each time. This tells the agent to
+# emit only the delta when it's answering a follow-up question.
+# ---------------------------------------------------------------------------
+IF THE QUESTION BEGINS WITH "FOLLOW-UP INVESTIGATION REQUIRED":
+  Do NOT repeat the Incident Summary, Timeline, Root Cause, Anomalies,
+  Recommendations, or Runbook Reference sections you already produced.
+  Your Final Answer must contain ONLY:
+
+  ## 🔄 SUPPLEMENTAL FINDINGS
+  [Address ONLY the specific missing items named in the Question — nothing else]
 
 ---
 Use the following format throughout your investigation:

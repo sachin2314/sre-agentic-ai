@@ -81,3 +81,5 @@ resources:
 ## SLO Impact
 Typical OOMKilled impact: 30-90 seconds of 503s per pod before restart completes.
 With 3 replicas and proper PDB: < 5% user-visible errors.
+PDB - Pod Disruption Budget
+
